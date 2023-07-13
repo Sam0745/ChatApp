@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "467712819006",
+    "project_id": "chatapp-45521",
+    "storage_bucket": "chatapp-45521.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467712819006:android:026e7bf72f7464ffcc766f",
+        "android_client_info": {
+          "package_name": "com.example.youchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "467712819006-t29qdlcqlo6usbh8cblf0lack4r7k2g6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAumx8njegtU9h747d4q-TyM3N3kqZ3QCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "467712819006-t29qdlcqlo6usbh8cblf0lack4r7k2g6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
