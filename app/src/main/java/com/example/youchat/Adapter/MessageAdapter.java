@@ -135,6 +135,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
             holder.rightTimeTextView.setText(formatTimestamp(message.getTime()));
         } else {
             holder.leftTimeTextView.setText(formatTimestamp(message.getTime()));
+            holder.receiverNameTextView.setText(message.getReceiverName());
         }
 
         if (!TextUtils.isEmpty(message.getImageUrl())) {

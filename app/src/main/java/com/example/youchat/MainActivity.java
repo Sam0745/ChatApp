@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     private List<GroupModel> groupList;
     private List<UserModel> userList;
+    private AlertDialog createGroupDialog;
 
 
     @Override
@@ -180,19 +183,12 @@ public class MainActivity extends AppCompatActivity {
         builder.setView(dialogView);
 
         EditText groupNameEditText = dialogView.findViewById(R.id.groupNameEditText);
-        ListView membersListView=dialogView.findViewById(R.id.membersListView);
+        ListView membersListView = dialogView.findViewById(R.id.membersListView);
 
         UserListAdapter userListAdapter = new UserListAdapter(userList);
         membersListView.setAdapter(userListAdapter);
 
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                String groupName = groupNameEditText.getText().toString().trim();
-                List<String> selectedUserIds=userListAdapter.getSelectedUserIds();
-                createGroup(groupName,selectedUserIds);
-            }
-        });
+        builder.setPositiveButton("Create", null);
 
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -201,8 +197,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        createGroupDialog = builder.create();
+
+
+        createGroupDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button createButton = createGroupDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                createButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String groupName = groupNameEditText.getText().toString().trim();
+
+                        if (groupName.isEmpty()) {
+                            Toast.makeText(MainActivity.this, "Enter Group Name", Toast.LENGTH_SHORT).show();
+                        } else if (groupName.length() < 3) {
+                            Toast.makeText(MainActivity.this, "Group Name must be at least 3 characters long", Toast.LENGTH_SHORT).show();
+                        } else {
+                            List<String> selectedUserIds = userListAdapter.getSelectedUserIds();
+                            if (selectedUserIds.isEmpty()) {
+                                Toast.makeText(MainActivity.this, "Select at least one member for the group", Toast.LENGTH_SHORT).show();
+                            } else {
+                                createGroup(groupName, selectedUserIds);
+                                createGroupDialog.dismiss();
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        createGroupDialog.show();
     }
 
     private void createGroup(String groupName, List<String> selectedUserIds) {

@@ -19,10 +19,15 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.youchat.Model.GroupMessageModel;
 import com.example.youchat.Model.MessageModel;
 import com.example.youchat.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -70,72 +75,80 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+
+
         MessageModel message = messageModelList.get(position);
 
         boolean isCurrentUser = message.getSenderId().equals(currentUserId);
 
-        holder.leftConstraint.setVisibility(isCurrentUser ? View.GONE : View.VISIBLE);
-        holder.rightConstraint.setVisibility(isCurrentUser ? View.VISIBLE : View.GONE);
 
-        if (isCurrentUser) {
-            holder.rightMessage.setVisibility(View.VISIBLE);
-            holder.rightMessage.setText(message.getMessage());
-            holder.rightImageView.setVisibility(View.GONE);
-            holder.rightConstraint.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    showDeletePopup(message);
-                    return true;
-                }
-            });
-        } else {
-            holder.leftMessage.setVisibility(View.VISIBLE);
-            holder.leftMessage.setText(message.getMessage());
-            holder.leftImageView.setVisibility(View.GONE);
-            holder.leftConstraint.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    showDeletePopup(message);
-                    return true;
-                }
-            });
-        }
+        holder.leftConstraint.setVisibility(View.GONE);
+        holder.rightConstraint.setVisibility(View.GONE);
 
-        String timestamp = formatTimestamp(message.getTime());
-        holder.leftTimeTextView.setText(timestamp);
-        holder.rightTimeTextView.setText(timestamp);
-
-        String imageUrl = message.getImageUrl();
-        if (!TextUtils.isEmpty(imageUrl)) {
-            if (isCurrentUser) {
-                holder.rightMessage.setVisibility(View.GONE);
+        if (message.isImage()) {
+            if (message.getSenderId().equals(currentUserId)) {
+                holder.leftConstraint.setVisibility(View.GONE);
+                holder.rightConstraint.setVisibility(View.VISIBLE);
                 holder.rightImageView.setVisibility(View.VISIBLE);
+                holder.rightMessage.setVisibility(View.GONE);
+
                 Glide.with(context)
-                        .load(imageUrl)
-                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .load(message.getMessage())
                         .into(holder.rightImageView);
+
+
             } else {
-                holder.leftMessage.setVisibility(View.GONE);
+                holder.leftConstraint.setVisibility(View.VISIBLE);
+                holder.rightConstraint.setVisibility(View.GONE);
                 holder.leftImageView.setVisibility(View.VISIBLE);
+                holder.leftMessage.setVisibility(View.GONE);
+
                 Glide.with(context)
-                        .load(imageUrl)
-                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .load(message.getMessage())
                         .into(holder.leftImageView);
             }
         } else {
-            holder.leftImageView.setVisibility(View.GONE);
-            holder.rightImageView.setVisibility(View.GONE);
+            // Display text message
+            if (message.getSenderId().equals(currentUserId)) {
+                holder.leftConstraint.setVisibility(View.GONE);
+                holder.rightConstraint.setVisibility(View.VISIBLE);
+                holder.rightMessage.setVisibility(View.VISIBLE);
+                holder.rightImageView.setVisibility(View.GONE);
+
+                holder.rightMessage.setText(message.getMessage());
+            } else {
+                holder.leftConstraint.setVisibility(View.VISIBLE);
+                holder.rightConstraint.setVisibility(View.GONE);
+                holder.leftMessage.setVisibility(View.VISIBLE);
+                holder.leftImageView.setVisibility(View.GONE);
+
+                holder.leftMessage.setText(message.getMessage());
+            }
         }
+
+        // Set timestamp
+        if (message.getSenderId().equals(currentUserId)) {
+            holder.rightTimeTextView.setText(formatTimestamp(message.getTime()));
+
+        } else {
+            holder.leftTimeTextView.setText(formatTimestamp(message.getTime()));
+            holder.receiverNameTextView.setText(message.getReceiverName());
+        }
+
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if (isCurrentUser) {
+
                     showDeletePopup(message);
-                }
+
                 return true;
             }
         });
+
+
+
     }
 
     @Override
@@ -148,6 +161,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
         TextView leftMessage, rightMessage;
         TextView leftTimeTextView, rightTimeTextView;
         ImageView leftImageView, rightImageView;
+        TextView receiverNameTextView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -163,6 +177,8 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
 
             leftImageView = itemView.findViewById(R.id.leftImageView);
             rightImageView = itemView.findViewById(R.id.rightImageView);
+
+            receiverNameTextView = itemView.findViewById(R.id.groupReceiverNameTextView);
         }
     }
 
@@ -190,30 +206,22 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
 
     private void deleteMessage(MessageModel message) {
         String messageId = message.getMsgId();
-        String imageUrl = message.getImageUrl();
+        if (messageId != null) {
+            DatabaseReference messageReference = messagesRef.child(messageId);
 
-        messagesRef.child(messageId).removeValue().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                messageModelList.remove(message);
-                notifyDataSetChanged();
-
-                if (!TextUtils.isEmpty(imageUrl)) {
-                    // Delete the image from storage if it exists
-                    StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
-                    imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            messageReference.removeValue()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(context, "Message deleted successfully", Toast.LENGTH_SHORT).show();
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(context, "Message deleted", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Failed to delete message", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }).addOnFailureListener(e -> {
-                        Toast.makeText(context, "Failed to delete the message", Toast.LENGTH_SHORT).show();
                     });
-                } else {
-                    Toast.makeText(context, "Message deleted successfully", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(context, "Failed to delete the message", Toast.LENGTH_SHORT).show();
-            }
-        });
+        } else {
+            Toast.makeText(context, "Message ID is null", Toast.LENGTH_SHORT).show();
+        }
     }
 }

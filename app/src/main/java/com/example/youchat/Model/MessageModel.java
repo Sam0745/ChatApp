@@ -1,80 +1,98 @@
 package com.example.youchat.Model;
 
-public class MessageModel {
-    private String msgId;
-    private String senderId;
-    private String receiverId;
-    private String receiverName;
-    private String message;
-    private long time;
-    private String imageUrl;
+    public class MessageModel {
+        private String msgId;
+        private String senderId;
+        private String receiverId;
+        private String receiverName;
+        private String message;
+        private long time;
+        private String imageUrl;
+        private boolean isImage;
 
-    public MessageModel() {
-    }
+        public MessageModel() {
+        }
 
-    public MessageModel(String msgId, String senderId, String receiverId, String receiverName, String message, long time, String imageUrl) {
-        this.msgId = msgId;
-        this.senderId = senderId;
-        this.receiverId = receiverId;
-        this.receiverName = receiverName;
-        this.message = message;
-        this.time = time;
-        this.imageUrl = imageUrl;
-    }
+        public MessageModel(String msgId, String senderId, String receiverId, String receiverName, String message, long time, String imageUrl) {
+            this.msgId = msgId;
+            this.senderId = senderId;
+            this.receiverId = receiverId;
+            this.receiverName = receiverName;
+            this.message = message;
+            this.time = time;
+            this.imageUrl = imageUrl;
+        }
+        public MessageModel(String msgId, String senderId, String receiverId, String receiverName, String message, long time, boolean isImage) {
+            this.msgId = msgId;
+            this.senderId = senderId;
+            this.receiverId = receiverId;
+            this.receiverName = receiverName;
+            this.message = message;
+            this.time = time;
+            this.isImage=isImage;
+        }
 
-    public String getMsgId() {
-        return msgId;
-    }
+        public String getMsgId() {
+            return msgId;
+        }
 
-    public void setMsgId(String msgId) {
-        this.msgId = msgId;
-    }
+        public void setMsgId(String msgId) {
+            this.msgId = msgId;
+        }
 
-    public String getSenderId() {
-        return senderId;
-    }
+        public String getSenderId() {
+            return senderId;
+        }
 
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
-    }
+        public void setSenderId(String senderId) {
+            this.senderId = senderId;
+        }
 
-    public String getReceiverId() {
-        return receiverId;
-    }
+        public String getReceiverId() {
+            return receiverId;
+        }
 
-    public void setReceiverId(String receiverId) {
-        this.receiverId = receiverId;
-    }
+        public void setReceiverId(String receiverId) {
+            this.receiverId = receiverId;
+        }
 
-    public String getReceiverName() {
-        return receiverName;
-    }
+        public String getReceiverName() {
+            return receiverName;
+        }
 
-    public void setReceiverName(String receiverName) {
-        this.receiverName = receiverName;
-    }
+        public void setReceiverName(String receiverName) {
+            this.receiverName = receiverName;
+        }
 
-    public String getMessage() {
-        return message;
-    }
+        public String getMessage() {
+            return message;
+        }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+        public void setMessage(String message) {
+            this.message = message;
+        }
 
-    public long getTime() {
-        return time;
-    }
+        public long getTime() {
+            return time;
+        }
 
-    public void setTime(long time) {
-        this.time = time;
-    }
+        public void setTime(long time) {
+            this.time = time;
+        }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+        public String getImageUrl() {
+            return imageUrl;
+        }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+        public void setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+        }
+
+        public boolean isImage() {
+            return isImage;
+        }
+
+        public void setImage(boolean image) {
+            isImage = image;
+        }
     }
-}

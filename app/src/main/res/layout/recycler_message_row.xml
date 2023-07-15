@@ -10,29 +10,28 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/leftChatLayout"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            >
 
                 <TextView
                     android:id="@+id/leftMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:background="@drawable/constrant_background_receiver"
-                    android:padding="15dp"
+                    android:padding="10dp"
                     android:text="Message"
+                    android:textAlignment="textStart"
                     android:textColor="@color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/receiverNameTextView"
+                    android:id="@+id/groupReceiverNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:text="Receiver Name"
                     android:textColor="@color/black"
                     android:textSize="14sp"
@@ -43,11 +42,11 @@
                     android:id="@+id/leftTimeStampTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:text="00"
+                    android:layout_marginTop="5dp"
                     android:textColor="@android:color/darker_gray"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/receiverNameTextView" />
+                    app:layout_constraintTop_toBottomOf="@id/groupReceiverNameTextView" />
 
                 <ImageView
                     android:id="@+id/leftImageView"
@@ -64,7 +63,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rightChatLayout"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/leftChatLayout">
@@ -73,20 +72,18 @@
                     android:id="@+id/RightMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:background="@drawable/constrant_background_sender"
-                    android:padding="15dp"
+                    android:padding="10dp"
                     android:text="Message"
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/rightTimeStampTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:text="00"
                     android:textColor="@android:color/darker_gray"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -96,13 +93,13 @@
                     android:id="@+id/rightImageView"
                     android:layout_width="250dp"
                     android:layout_height="250dp"
-                    android:scaleType="centerCrop"
                     android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/rightTimeStampTextView"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rightTimeStampTextView" />
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -113,7 +110,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/rightImageView"
                     app:layout_constraintEnd_toEndOf="@+id/rightImageView"
                     app:layout_constraintStart_toStartOf="@+id/rightImageView"
-                    app:layout_constraintTop_toTopOf="@id/rightImageView"/>
+                    app:layout_constraintTop_toTopOf="@id/rightImageView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

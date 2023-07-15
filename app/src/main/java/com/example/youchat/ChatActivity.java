@@ -84,6 +84,8 @@ public class ChatActivity extends AppCompatActivity {
         chatXml.receiverEmailTextView.setText(receiverEmail);
 
 
+
+
         databaseReferenceSender = FirebaseDatabase.getInstance().getReference("chats").child(senderRoom);
         databaseReferenceReceiver = FirebaseDatabase.getInstance().getReference("chats").child(receiverRoom);
 
