@@ -9,6 +9,7 @@ package com.example.youchat.Model;
         private long time;
         private String imageUrl;
         private boolean isImage;
+        private boolean isAudio;
 
         public MessageModel() {
         }
@@ -22,15 +23,25 @@ package com.example.youchat.Model;
             this.time = time;
             this.imageUrl = imageUrl;
         }
-        public MessageModel(String msgId, String senderId, String receiverId, String receiverName, String message, long time, boolean isImage) {
-            this.msgId = msgId;
+        public MessageModel(String messageId, String senderId, String receiverId, String senderName, String message, long timestamp, boolean isImage,boolean isAudio) {
+            this.msgId = messageId;
+            this.senderId = senderId;
+            this.receiverId = receiverId;
+            this.receiverName = senderName;
+            this.message = message;
+            this.time = timestamp;
+            this.isImage = isImage;
+            this.isAudio=isAudio;
+        }
+
+        /*public MessageModel(String messageId, String senderId, String receiverId, String receiverName, String audioUrl, long timestamp) {
+            this.msgId = messageId;
             this.senderId = senderId;
             this.receiverId = receiverId;
             this.receiverName = receiverName;
-            this.message = message;
-            this.time = time;
-            this.isImage=isImage;
-        }
+            this.audioUrl = audioUrl;
+            this.time = timestamp;
+        }*/
 
         public String getMsgId() {
             return msgId;
@@ -94,5 +105,13 @@ package com.example.youchat.Model;
 
         public void setImage(boolean image) {
             isImage = image;
+        }
+
+        public boolean isAudio() {
+            return isAudio;
+        }
+
+        public void setAudio(boolean audio) {
+            isAudio = audio;
         }
     }
