@@ -203,8 +203,7 @@ public class ChatActivity extends AppCompatActivity {
         progressDialog.setMax(100);
         progressDialog.show();
 
-        ProgressBar progressBar=findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
+
 
         UploadTask uploadTask= imageRef.putFile(imageUri);
         uploadTask.addOnProgressListener(taskSnapshot -> {
@@ -217,12 +216,12 @@ public class ChatActivity extends AppCompatActivity {
                 String imageUrl=uri.toString();
                 saveImageToDataBase(imageUrl,receiverId,receiverName);
                 progressDialog.dismiss();
-                progressBar.setVisibility(View.GONE);
+
                 Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
             });
         }).addOnFailureListener(e -> {
             progressDialog.dismiss();
-            progressBar.setVisibility(View.GONE);
+
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         });
                 /*.addOnSuccessListener(taskSnapshot -> {
