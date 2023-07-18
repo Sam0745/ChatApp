@@ -17,11 +17,15 @@
         <entry key="..\:/my projects/YouChat/app/src/main/res/drawable/ic_baseline_group_add_24.xml" value="0.2915" />
         <entry key="..\:/my projects/YouChat/app/src/main/res/drawable/ic_baseline_groups_24.xml" value="0.2915" />
         <entry key="..\:/my projects/YouChat/app/src/main/res/drawable/ic_baseline_image_24.xml" value="0.2915" />
+        <entry key="..\:/my projects/YouChat/app/src/main/res/drawable/ic_baseline_music_note_24.xml" value="0.2185" />
         <entry key="..\:/my projects/YouChat/app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.2185" />
         <entry key="..\:/my projects/YouChat/app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.2185" />
+        <entry key="..\:/my projects/YouChat/app/src/main/res/drawable/item_background.xml" value="0.2185" />
+        <entry key="..\:/my projects/YouChat/app/src/main/res/drawable/item_backgrounds.xml" value="0.2185" />
+        <entry key="..\:/my projects/YouChat/app/src/main/res/drawable/item_backgroung.xml" value="0.2185" />
         <entry key="..\:/my projects/YouChat/app/src/main/res/layout/activity_authentication.xml" value="0.23324275362318841" />
         <entry key="..\:/my projects/YouChat/app/src/main/res/layout/activity_chat.xml" value="0.33" />
-        <entry key="..\:/my projects/YouChat/app/src/main/res/layout/activity_group_chat_atcivity.xml" value="0.30416666666666664" />
+        <entry key="..\:/my projects/YouChat/app/src/main/res/layout/activity_group_chat_atcivity.xml" value="0.33" />
         <entry key="..\:/my projects/YouChat/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/my projects/YouChat/app/src/main/res/layout/dialog_create_group.xml" value="0.30416666666666664" />
         <entry key="..\:/my projects/YouChat/app/src/main/res/layout/group_row.xml" value="0.30416666666666664" />

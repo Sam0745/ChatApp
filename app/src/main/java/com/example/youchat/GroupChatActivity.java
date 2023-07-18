@@ -109,19 +109,26 @@ public class GroupChatActivity extends AppCompatActivity {
                 groupXml.ItemsCardView.setVisibility(View.VISIBLE);
                 groupXml.AddButton.setVisibility(View.GONE);
                 groupXml.closeAddButton.setVisibility(View.VISIBLE);
-                groupXml.shareGroupImageButton.setOnClickListener(new View.OnClickListener() {
+                groupXml.constraintGallery.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         openGallery();
+                        groupXml.AddButton.setVisibility(View.VISIBLE);
+                        groupXml.ItemsCardView.setVisibility(View.GONE);
+                        groupXml.closeAddButton.setVisibility(View.GONE);
 
 
                     }
 
                 });
-                groupXml.shareGroupAudioButton.setOnClickListener(new View.OnClickListener() {
+                groupXml.constraintAudio.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         openAudioPicker();
+                        groupXml.AddButton.setVisibility(View.VISIBLE);
+                        groupXml.ItemsCardView.setVisibility(View.GONE);
+                        groupXml.closeAddButton.setVisibility(View.GONE);
+
                     }
                 });
                 groupXml.closeAddButton.setOnClickListener(new View.OnClickListener() {
