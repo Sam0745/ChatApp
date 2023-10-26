@@ -82,7 +82,7 @@ public class GroupChatActivity extends AppCompatActivity {
                 .child(groupId)
                 .child("message");
 
-        groupMessageAdapter = new GroupMessageAdapter(this, FirebaseAuth.getInstance().getCurrentUser().getUid(), groupChatRef);
+        groupMessageAdapter = new GroupMessageAdapter(this, currentUser.getUid(), groupChatRef);
         groupXml.groupChatRecycler.setAdapter(groupMessageAdapter);
         groupMessageAdapter.setRecyclerView(groupXml.groupChatRecycler);
 

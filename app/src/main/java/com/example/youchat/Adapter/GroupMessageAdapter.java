@@ -3,7 +3,6 @@ package com.example.youchat.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,24 +18,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.example.youchat.Model.GroupMessageModel;
 import com.example.youchat.Model.MessageModel;
 import com.example.youchat.R;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,9 +33,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.ConsoleHandler;
 
 
 public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapter.MyViewHolder> {
@@ -60,6 +46,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
     private boolean isPlayerPlaying;
     private int currentPlayingPosition;
     private RecyclerView recyclerView;
+    private String senderRoom, receiverRoom;
     private long progressBeforeSeeking;
 
 
@@ -71,9 +58,23 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
         this.isPlayerPlaying = false;
         this.currentPlayingPosition = -1;
         this.player = new SimpleExoPlayer.Builder(context).build();
-        this.handler =new Handler();
+        this.handler = new Handler();
     }
 
+    public GroupMessageAdapter(Context context,String currentUserId, String senderRoom, String receiverRoom) {
+        this.context = context;
+        this.currentUserId = currentUserId;
+        this.messageModelList = new ArrayList<>();
+        this.senderRoom = senderRoom;
+        this.receiverRoom = receiverRoom;
+    }
+
+   /* public GroupMessageAdapter(Context context, String senderRoom, String receiverRoom, DatabaseReference messagesRef) {
+        this.context = context;
+        this.senderRoom = senderRoom;
+        this.receiverRoom = receiverRoom;
+        this.messagesRef = messagesRef;
+    }*/
 
     public void addAll(List<MessageModel> messages) {
         int previousSize = messageModelList.size();
@@ -100,7 +101,6 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
 
 
         MessageModel message = messageModelList.get(position);
@@ -131,12 +131,13 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
                 holder.rightConstraint.setVisibility(View.GONE);
                 holder.leftImageView.setVisibility(View.VISIBLE);
                 holder.leftMessage.setVisibility(View.GONE);
+                holder.receiverNameTextView.setVisibility(recyclerView.VISIBLE);
 
                 Glide.with(context)
                         .load(message.getMessage())
                         .into(holder.leftImageView);
             }
-        }else if (message.isAudio()){
+        } else if (message.isAudio()) {
             if (isCurrentUser) {
                 holder.rightConstraint.setVisibility(View.VISIBLE);
                 holder.rightAudioConstraint.setVisibility(View.VISIBLE);
@@ -149,11 +150,11 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
                 holder.leftAudioConstraint.setVisibility(View.VISIBLE);
                 holder.leftMessage.setVisibility(View.GONE);
                 holder.leftImageView.setVisibility(View.GONE);
+                holder.receiverNameTextView.setVisibility(recyclerView.VISIBLE);
                 setAudioPlayer(holder.leftBtnPlayPause, holder.leftSeekBar, holder.leftAudioCurrentTime, holder.leftAudioTotalDuration, position);
                 updateAudioPlaybackUI(holder.leftBtnPlayPause, holder.leftSeekBar, holder.leftAudioCurrentTime, holder.leftAudioTotalDuration, position);
             }
-        }
-        else {
+        } else {
             // Display text message
             if (message.getSenderId().equals(currentUserId)) {
                 holder.rightAudioConstraint.setVisibility(View.GONE);
@@ -171,6 +172,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
                 holder.rightConstraint.setVisibility(View.GONE);
                 holder.leftMessage.setVisibility(View.VISIBLE);
                 holder.leftImageView.setVisibility(View.GONE);
+                holder.receiverNameTextView.setVisibility(recyclerView.VISIBLE);
 
                 holder.leftMessage.setText(message.getMessage());
             }
@@ -186,21 +188,15 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
         }
 
 
-
-
-
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
 
-                    showDeletePopup(message);
+                showDeletePopup(message);
 
                 return true;
             }
         });
-
-
-
 
 
     }
@@ -262,14 +258,12 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
             rightAudioTotalDuration = itemView.findViewById(R.id.rightAudioTotalDuration);
 
 
-
-
         }
 
         public boolean isAudioMessageFromCurrentUser() {
-                MessageModel message = messageModelList.get(getAdapterPosition());
-                String senderId = message.getSenderId();
-                return senderId.equals(currentUserId);
+            MessageModel message = messageModelList.get(getAdapterPosition());
+            String senderId = message.getSenderId();
+            return senderId.equals(currentUserId);
         }
     }
 
@@ -315,6 +309,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
             Toast.makeText(context, "Message ID is null", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void updateAudioPlaybackUI(ImageButton btnPlayPause, SeekBar seekBar, TextView audioCurrentTime, TextView audioTotalDuration, int position) {
         if (position == currentPlayingPosition) {
             btnPlayPause.setImageResource(isPlayerPlaying ? R.drawable.ic_baseline_pause_24 : R.drawable.ic_baseline_play_arrow_24);
@@ -368,10 +363,10 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
         });
 
 
-        player.addListener(new Player.EventListener(){
+        player.addListener(new Player.EventListener() {
             @Override
             public void onPlaybackStateChanged(int state) {
-                if (state == Player.STATE_READY){
+                if (state == Player.STATE_READY) {
                     long duration = player.getDuration();
                     audioTotalDuration.setText(formatTime(duration));
                     seekBar.setMax((int) (duration / 1000L)); // Convert duration to seconds
@@ -382,7 +377,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
 
                     notifyDataSetChanged();
 
-                }else if (state == Player.STATE_ENDED || state == Player.STATE_IDLE || state == Player.STATE_BUFFERING) {
+                } else if (state == Player.STATE_ENDED || state == Player.STATE_IDLE || state == Player.STATE_BUFFERING) {
                     btnPlayPause.setImageResource(R.drawable.ic_baseline_pause_24);
                     isPlayerPlaying = false;
                     currentPlayingPosition = -1;
@@ -398,6 +393,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
             }
         });
     }
+
     private void toggleAudioPlayback(int position) {
         if (position == currentPlayingPosition) {
             if (isPlayerPlaying) {
@@ -428,6 +424,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
         isPlayerPlaying = true;
         handler.post(progressRunnable);
     }
+
     private void pauseAudioPlayback() {
         player.pause();
         isPlayerPlaying = false;
@@ -503,6 +500,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
         long minutes = (milliseconds / (1000 * 60)) % 60;
         return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
     }
+
     public void setRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
     }

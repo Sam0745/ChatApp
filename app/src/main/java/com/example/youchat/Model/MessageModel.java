@@ -14,14 +14,14 @@ package com.example.youchat.Model;
         public MessageModel() {
         }
 
-        public MessageModel(String msgId, String senderId, String receiverId, String receiverName, String message, long time, String imageUrl) {
+        public MessageModel(String msgId, String senderId, String receiverId, String receiverName, String message, long time, boolean isImage) {
             this.msgId = msgId;
             this.senderId = senderId;
             this.receiverId = receiverId;
             this.receiverName = receiverName;
             this.message = message;
             this.time = time;
-            this.imageUrl = imageUrl;
+            this.isImage = isImage;
         }
         public MessageModel(String messageId, String senderId, String receiverId, String senderName, String message, long timestamp, boolean isImage,boolean isAudio) {
             this.msgId = messageId;
